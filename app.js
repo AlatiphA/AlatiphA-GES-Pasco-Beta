@@ -210,17 +210,24 @@ function startReader() {
 
   rendition.themes.fontSize(
     fontSize + "%"
-  );  
+  );
 
   applyTheme();
 
   setupNavigationZones();
 
   /* =========================
-     FAST INITIAL DISPLAY
+     RESTORE SAVED LOCATION
   ========================= */
 
-  rendition.display();
+  const savedLocation =
+    localStorage.getItem(
+      "epub-location"
+    );
+
+  rendition.display(
+    savedLocation || undefined
+  );
 
   /* ====================
      BACKGROUND SETUP
@@ -280,34 +287,6 @@ function startReader() {
       await book.locations.generate(
         1000
       );
-
-      /* RESTORE POSITION */
-
-      const savedLocation =
-        localStorage.getItem(
-          "epub-location"
-        );
-
-      if (savedLocation) {
-
-        try {
-
-          await rendition.display(
-            savedLocation
-          );
-
-        }
-
-        catch (error) {
-
-          console.error(
-            "Restore failed:",
-            error
-          );
-
-        }
-
-      }
 
     });
 
