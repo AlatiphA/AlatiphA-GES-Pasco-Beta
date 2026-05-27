@@ -122,7 +122,7 @@ let controlsVisible =
 let fontSize =
   Number(
     localStorage.getItem(
-      "fontSize"
+      "fontSize-beta"
     )
   ) || 100;
 
@@ -207,7 +207,7 @@ function startReader() {
 
   const savedLocation =
     localStorage.getItem(
-      "epub-location"
+      "epub-beta-location"
     );
 
   rendition.display(
@@ -286,7 +286,7 @@ function startReader() {
       try {
 
         localStorage.setItem(
-          "epub-location",
+          "epub-beta-location",
           location.start.cfi
         );
 
@@ -543,7 +543,7 @@ function applyTheme() {
 
   const darkMode =
     localStorage.getItem(
-      "darkMode"
+      "darkMode-beta"
     ) === "true";
 
   document.body.classList.toggle(
@@ -866,11 +866,11 @@ themeBtn.addEventListener(
 
     const darkMode =
       localStorage.getItem(
-        "darkMode"
+        "darkMode-beta"
       ) == "true";
 
     localStorage.setItem(
-      "darkMode",
+      "darkMode-beta",
       (!darkMode).toString()
     );
 
@@ -920,7 +920,7 @@ bottomDecreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize",
+      "fontSize-beta",
       fontSize
     );
 
@@ -938,7 +938,7 @@ bottomIncreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize",
+      "fontSize-beta",
       fontSize
     );
 
@@ -1008,7 +1008,7 @@ if (
         await navigator
           .serviceWorker
           .register(
-            "./sw.js"
+            "./sw-beta.js"
           );
 
       }
