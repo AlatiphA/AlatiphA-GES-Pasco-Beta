@@ -133,7 +133,7 @@
   `;
   document.head.appendChild(style);
 
-  const INSTALL_KEY = "gesptp_install_dismissed";
+  const INSTALL_KEY = "gespasco_install_dismissed";
   const dismissed =
     localStorage.getItem(INSTALL_KEY);
 
@@ -225,7 +225,7 @@
       banner.id = "iosBanner";
       banner.innerHTML = `
         <div class="ios-title">
-          📖 Install GES Promotion Aptitude Test Pasco
+          📖 Install GES Pasco
         </div>
         <div class="ios-steps">
           Tap <strong>Share</strong> (□↑) at the bottom of Safari<br>
