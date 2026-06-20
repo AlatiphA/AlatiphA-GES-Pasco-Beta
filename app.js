@@ -138,7 +138,7 @@ let fontSize =
    APP VERSION
    Change this on every release
 ========================= */
-const APP_VERSION = "3.3.8";
+const APP_VERSION = "3.0.0";
 
 const versionEl =
   document.getElementById(
@@ -149,10 +149,10 @@ if (versionEl)
     "v" + APP_VERSION;
 
 const READER_DATA_KEY =
-  "epub-reader-data";
+  "ges-pasco-data";
 
 const BOOKMARKS_KEY =
-  "epub-reader-bookmarks";
+  "ges-pasco-bookmarks";
 
 
 /* =========================
@@ -1702,7 +1702,7 @@ bottomDecreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize-beta",
+      "fontSize",
       fontSize
     );
 
@@ -1720,7 +1720,7 @@ bottomIncreaseFont.addEventListener(
     );
 
     localStorage.setItem(
-      "fontSize-beta",
+      "fontSize",
       fontSize
     );
 
