@@ -159,7 +159,7 @@ let fontFamily =
    APP VERSION
    Change this on every release
 ========================= */
-const APP_VERSION = "3.0.9";
+const APP_VERSION = "3.1.0";
 
 const versionEl =
   document.getElementById(
@@ -773,23 +773,22 @@ function startReader() {
 
   /* Inject custom @font-face into every epub chapter iframe */
   rendition.hooks.content.register(contents => {
+    const base = window.location.href.replace(/\/[^/]*$/, "");
     const fontCSS = `
       @font-face {
         font-family: 'Merriweather';
-        src: url('${location.origin}${location.pathname.replace(/\/[^/]*$/, '')}/fonts/Merriweather-VariableFont_opsz_wdth_wght.ttf') format('truetype');
+        src: url('${base}/fonts/Merriweather-VariableFont_opsz_wdth_wght.ttf') format('truetype');
         font-weight: 100 900;
-        font-display: swap;
       }
       @font-face {
         font-family: 'Open Sans';
-        src: url('${location.origin}${location.pathname.replace(/\/[^/]*$/, '')}/fonts/OpenSans-VariableFont_wdth_wght.ttf') format('truetype');
+        src: url('${base}/fonts/OpenSans-VariableFont_wdth_wght.ttf') format('truetype');
         font-weight: 100 900;
-        font-display: swap;
       }
     `;
-    contents.addStylesheetRules({ "@font-face": {} });
     const doc = contents.document;
     const style = doc.createElement("style");
+    style.id = "custom-fonts";
     style.textContent = fontCSS;
     doc.head.appendChild(style);
   });
@@ -1721,7 +1720,16 @@ function applyFont(font) {
 
   /* Apply to rendition if reader is open */
   if (rendition) {
+    /* Update themes.default so new chapters get it */
     applyTheme();
+
+    /* Also directly update all currently loaded iframes */
+    rendition.getContents().forEach(contents => {
+      const doc = contents.document;
+      if (doc && doc.body) {
+        doc.body.style.fontFamily = font;
+      }
+    });
   }
 }
 
