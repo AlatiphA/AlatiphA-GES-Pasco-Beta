@@ -1,3 +1,21 @@
+/* =========================
+   CUSTOM FONTS
+========================= */
+
+@font-face {
+  font-family: 'Merriweather';
+  src: url('./fonts/Merriweather-VariableFont_opsz_wdth_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('./fonts/OpenSans-VariableFont_wdth_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -880,6 +898,73 @@ body.dark .bookmarkRow {
 .themeSwatchWrap.dark  .themeSwatch { background: #111111; }
 .themeSwatchWrap.sepia .themeSwatch { background: #f4ede0; border: 1px solid #c8b89a; }
 .themeSwatchWrap.night .themeSwatch { background: #000000; border: 1px solid #333; }
+
+/* =========================
+   FONT PICKER
+========================= */
+
+.fontPicker {
+  position: fixed;
+  bottom: 78px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  z-index: 19999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.fontPicker.open {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateX(-50%) translateY(0);
+}
+
+.fontPickerInner {
+  background: rgba(30,30,30,0.97);
+  border: 1px solid #444;
+  border-radius: 10px;
+  padding: 8px 10px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+}
+
+.fontPickerLabel {
+  display: block;
+  text-align: center;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #777;
+  margin-bottom: 8px;
+}
+
+.fontOptions {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.fontOption {
+  background: none;
+  border: 1px solid #444;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #bbb;
+  font-size: 11px;
+  padding: 5px 8px;
+  transition: background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.fontOption:hover {
+  background: rgba(255,255,255,0.07);
+}
+
+.fontOption.active {
+  color: #956433;
+  border-color: #956433;
+}
 
 /* =========================
    MOMO SUPPORT SECTION
