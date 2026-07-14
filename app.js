@@ -150,12 +150,16 @@ let fontSize =
     )
   ) || 100;
 
+let fontFamily =
+  localStorage.getItem("fontFamily") ||
+  "serif";
+
 
 /* =========================
    APP VERSION
    Change this on every release
 ========================= */
-const APP_VERSION = "3.0.7";
+const APP_VERSION = "3.1.0";
 
 const versionEl =
   document.getElementById(
@@ -766,7 +770,31 @@ function startReader() {
     );
 
   /* FONT & THEME */
-  
+
+  /* Inject @font-face into every epub iframe with !important to override epub CSS */
+  rendition.hooks.content.register(contents => {
+    const base = window.location.href.replace(/\/[^/]*$/, "");
+    const doc = contents.document;
+    const style = doc.createElement("style");
+    style.id = "custom-fonts";
+    style.textContent = `
+      @font-face {
+        font-family: 'Merriweather';
+        src: url('${base}/fonts/Merriweather-VariableFont_opsz_wdth_wght.ttf') format('truetype');
+        font-weight: 100 900;
+      }
+      @font-face {
+        font-family: 'Open Sans';
+        src: url('${base}/fonts/OpenSans-VariableFont_wdth_wght.ttf') format('truetype');
+        font-weight: 100 900;
+      }
+      body, p, li, td, th, h1, h2, h3, h4, h5, h6, span, div {
+        font-family: ${fontFamily} !important;
+      }
+    `;
+    doc.head.appendChild(style);
+  });
+
   rendition.themes.fontSize(
     fontSize + "%"
   );
@@ -1281,11 +1309,11 @@ function applyTheme(theme) {
 
   rendition.themes.default({
     body: {
-      background:   t.bg,
-      color:        t.color,
-      padding:      "20px",
-      "line-height":"1.7",
-      "font-family":"Arial, sans-serif",
+      background:    t.bg,
+      color:         t.color,
+      padding:       "20px",
+      "line-height": "1.7",
+      "font-family": fontFamily,
     },
     a: { color: t.link },
   });
@@ -1643,6 +1671,7 @@ const themePicker =
 
 function toggleThemePicker() {
   themePicker.classList.toggle("open");
+  closeFontPicker();
 }
 
 function closeThemePicker() {
@@ -1657,13 +1686,102 @@ themeBtn.addEventListener(
   }
 );
 
-/* Close picker when nav zones are tapped */
+/* Close pickers when nav zones are tapped */
 [leftZone, centerZone, rightZone].forEach(
   zone => zone.addEventListener(
     "click",
-    () => closeThemePicker()
+    () => {
+      closeThemePicker();
+      closeFontPicker();
+    }
   )
 );
+
+/* =========================
+   FONT PICKER
+========================= */
+
+const fontPicker =
+  document.getElementById("fontPicker");
+
+const fontPickerBtn =
+  document.getElementById("fontPickerBtn");
+
+function applyFont(font) {
+  fontFamily = font;
+  localStorage.setItem("fontFamily", font);
+
+  /* Mark active button */
+  document.querySelectorAll(".fontOption")
+    .forEach(btn => {
+      btn.classList.toggle(
+        "active",
+        btn.dataset.font === font
+      );
+    });
+
+  if (!rendition) return;
+
+  /* Update all currently loaded iframes directly with !important */
+  rendition.getContents().forEach(contents => {
+    const doc = contents.document;
+    if (!doc) return;
+
+    /* Update or create the custom-fonts style tag */
+    let style = doc.getElementById("custom-fonts");
+    if (style) {
+      /* Update font-family rule inside the existing style */
+      const lines = style.textContent.split("\n");
+      style.textContent = style.textContent.replace(
+        /body,[\s\S]*?font-family:.*?!important;[\s\S]*?}/,
+        `body, p, li, td, th, h1, h2, h3, h4, h5, h6, span, div {
+          font-family: ${font} !important;
+        }`
+      );
+    }
+
+    /* Also set inline on body for instant effect */
+    if (doc.body) {
+      doc.body.style.setProperty("font-family", font, "important");
+    }
+  });
+
+  /* Re-apply theme so new pages also get the font */
+  applyTheme();
+}
+
+function toggleFontPicker() {
+  fontPicker.classList.toggle("open");
+  closeThemePicker();
+}
+
+function closeFontPicker() {
+  if (fontPicker) fontPicker.classList.remove("open");
+}
+
+if (fontPickerBtn) {
+  fontPickerBtn.addEventListener("click", e => {
+    e.stopPropagation();
+    toggleFontPicker();
+  });
+}
+
+document.querySelectorAll(".fontOption")
+  .forEach(btn => {
+    btn.addEventListener("click", () => {
+      applyFont(btn.dataset.font);
+      closeFontPicker();
+    });
+  });
+
+/* Mark saved font as active on load */
+document.querySelectorAll(".fontOption")
+  .forEach(btn => {
+    btn.classList.toggle(
+      "active",
+      btn.dataset.font === fontFamily
+    );
+  });
 
 nextPage.addEventListener(
   "click",
