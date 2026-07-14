@@ -159,7 +159,7 @@ let fontFamily =
    APP VERSION
    Change this on every release
 ========================= */
-const APP_VERSION = "3.0.8";
+const APP_VERSION = "3.0.9";
 
 const versionEl =
   document.getElementById(
@@ -770,7 +770,30 @@ function startReader() {
     );
 
   /* FONT & THEME */
-  
+
+  /* Inject custom @font-face into every epub chapter iframe */
+  rendition.hooks.content.register(contents => {
+    const fontCSS = `
+      @font-face {
+        font-family: 'Merriweather';
+        src: url('${location.origin}${location.pathname.replace(/\/[^/]*$/, '')}/fonts/Merriweather-VariableFont_opsz_wdth_wght.ttf') format('truetype');
+        font-weight: 100 900;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Open Sans';
+        src: url('${location.origin}${location.pathname.replace(/\/[^/]*$/, '')}/fonts/OpenSans-VariableFont_wdth_wght.ttf') format('truetype');
+        font-weight: 100 900;
+        font-display: swap;
+      }
+    `;
+    contents.addStylesheetRules({ "@font-face": {} });
+    const doc = contents.document;
+    const style = doc.createElement("style");
+    style.textContent = fontCSS;
+    doc.head.appendChild(style);
+  });
+
   rendition.themes.fontSize(
     fontSize + "%"
   );
