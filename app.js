@@ -159,7 +159,7 @@ let fontFamily =
    APP VERSION
    Change this on every release
 ========================= */
-const APP_VERSION = "3.1.4";
+const APP_VERSION = "3.1.6";
 
 const versionEl =
   document.getElementById(
@@ -886,7 +886,15 @@ function startReader() {
       const dy = t.clientY - _ty;
       const dt = Date.now() - _tt;
       _tx = null;
-      /* Ignore swipes or long press */
+
+      /* Swipe navigation — horizontal swipe > 40px */
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        if (dx < 0) { pageNext(); hideControls(); }
+        else { pagePrev(); hideControls(); }
+        return;
+      }
+
+      /* Ignore long press or diagonal swipe */
       if (Math.abs(dx) > 25 || Math.abs(dy) > 25 || dt > 500) return;
       /* Bail if tap was on a link — let click handle it */
       const el = doc.elementFromPoint(t.clientX, t.clientY);
