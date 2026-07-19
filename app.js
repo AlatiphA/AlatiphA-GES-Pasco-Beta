@@ -159,7 +159,7 @@ let fontFamily =
    APP VERSION
    Change this on every release
 ========================= */
-const APP_VERSION = "3.2.2";
+const APP_VERSION = "3.2.3";
 
 const versionEl =
   document.getElementById(
@@ -1019,12 +1019,17 @@ function startReader() {
 
     const clone = el.cloneNode(true);
 
-    /* Remove ALL links from popup — prevents errors and back-link confusion */
+    /* Remove ALL links from popup */
     clone.querySelectorAll("a").forEach(a => {
       const span = document.createElement("span");
       span.textContent = a.textContent;
       a.replaceWith(span);
     });
+
+    /* Don't show popup if content is just a number or back-link marker
+       e.g. "6" or "[←6]" — these are back-links, not real footnotes */
+    const text = clone.textContent.trim();
+    if (/^\[?←?\d+\]?$/.test(text) || /^\d+$/.test(text)) return;
 
     const isDark =
       document.body.classList.contains("dark") ||
